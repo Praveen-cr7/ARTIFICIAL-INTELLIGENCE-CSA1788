@@ -1,0 +1,69 @@
+import copy
+
+# Helper function to check if a player has won
+def check_win(board, player):
+    # Check rows
+    for row in board:
+        if row == [player, player, player]:
+            return True
+    # Check columns
+    for col in range(3):
+        if board[0][col] == player and board[1][col] == player and board[2][col] == player:
+            return True
+    # Check diagonals
+    if board[0][0] == player and board[1][1] == player and board[2][2] == player:
+        return True
+    if board[0][2] == player and board[1][1] == player and board[2][0] == player:
+        return True
+    return False
+
+# Helper function to get the list of available moves
+def get_moves(board):
+    moves = []
+    for i in range(3):
+        for j in range(3):
+            if board[i][j] == 0:
+                moves.append((i, j))
+    return moves
+
+# Minimax function
+def minimax(board, player, depth):
+    if check_win(board, 1):
+        return 1
+    if check_win(board, 2):
+        return -1
+    if depth == 9:
+        return 0
+    if player == 1:
+        best_value = -float("inf")
+        for move in get_moves(board):
+            new_board = copy.deepcopy(board)
+            new_board[move[0]][move[1]] = 1
+            value = minimax(new_board, 2, depth + 1)
+            best_value = max(best_value, value)
+        return best_value
+    if player == 2:
+        best_value = float("inf")
+        for move in get_moves(board):
+            new_board = copy.deepcopy(board)
+            new_board[move[0]][move[1]] = 2
+            value = minimax(new_board, 1, depth + 1)
+            best_value = min(best_value, value)
+        return best_value
+
+# Function to find the best move for the AI player
+def find_best_move(board, player):
+    best_value = -float("inf")
+    best_move = None
+    for move in get_moves(board):
+        new_board = copy.deepcopy(board)
+        new_board[move[0]][move[1]] = player
+        value = minimax(new_board, 2, 0)
+        if value > best_value:
+            best_value = value
+            best_move = move
+    return best_move
+
+# Example usage
+board = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
+print(find_best_move(board, 1)) # Expected output: (0, 0)
