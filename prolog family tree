@@ -1,0 +1,13 @@
+% Define relationships
+parent(john, jim).
+parent(jim, jake).
+parent(jake, jessica).
+parent(jake, julia).
+
+% Define a rule to check if X is a ancestor of Y
+ancestor(X, Y) :- parent(X, Y).
+ancestor(X, Y) :- parent(X, Z), ancestor(Z, Y).
+
+% Define a rule to check if X is a descendant of Y
+descendant(X, Y) :- ancestor(Y, X).
+
